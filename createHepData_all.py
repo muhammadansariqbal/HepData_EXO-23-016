@@ -6,11 +6,10 @@ This script extracts histograms from ROOT files and converts them to HEPData for
 It reads a ROOT file containing a TCanvas with multiple histograms and generates
 the appropriate YAML files for HEPData submission.
 
-The script is designed to work with efficiency plots showing trigger efficiency
-as a function of minimum impact parameter (d_0).
+For EXO-23-016
 
 Usage:
-    python3 rootToHepData.py
+    python3 createHepData_all.py
 
 Output:
     - Creates 'hepdata_output/' directory with YAML files
