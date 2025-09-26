@@ -1,0 +1,220 @@
+dependent_variables:
+- header:
+    name: Trigger efficiency (Run 2 (2018))
+  qualifiers:
+  - name: CHANNEL
+    value: $H \rightarrow Z_DZ_D, Z_D \rightarrow \mu\mu$
+  values:
+  - value: 0.16038
+  - value: 0.16204
+  - value: 0.1632
+  - value: 0.16425
+  - value: 0.16527
+  - value: 0.1661
+  - value: 0.16659
+  - value: 0.16684
+  - value: 0.16691
+  - value: 0.16703
+  - value: 0.16714
+  - value: 0.16723
+  - value: 0.16729
+  - value: 0.16747
+  - value: 0.16855
+  - value: 0.17047
+  - value: 0.17077
+  - value: 0.16437
+  - value: 0.1596
+  - value: 0.1465
+  - value: 0.11792
+  - value: 0.085667
+  - value: 0.057254
+  - value: 0.03616
+  - value: 0.022869
+  - value: 0.022172
+  - value: 0.013523
+  - value: 0.0083175
+  - value: 0.0051186
+  - value: 0.0031011
+  - value: 0.001838
+  - value: 0.001069
+  - value: 0.00061348
+  - value: 0.00034912
+  - value: 0.00019767
+  - value: 0.00011159
+  - value: 6.2893e-05
+  - value: 3.5412e-05
+- header:
+    name: Trigger efficiency (Run 3 (2022))
+  qualifiers:
+  - name: CHANNEL
+    value: $H \rightarrow Z_DZ_D, Z_D \rightarrow \mu\mu$
+  values:
+  - value: 0.19286
+  - value: 0.19741
+  - value: 0.21486
+  - value: 0.24563
+  - value: 0.28272
+  - value: 0.31853
+  - value: 0.34987
+  - value: 0.37742
+  - value: 0.38622
+  - value: 0.40182
+  - value: 0.42243
+  - value: 0.43906
+  - value: 0.4461
+  - value: 0.4514
+  - value: 0.4599
+  - value: 0.46397
+  - value: 0.4604
+  - value: 0.44438
+  - value: 0.43496
+  - value: 0.4104
+  - value: 0.35316
+  - value: 0.27699
+  - value: 0.19792
+  - value: 0.1314
+  - value: 0.085799
+  - value: 0.083325
+  - value: 0.051819
+  - value: 0.032069
+  - value: 0.019654
+  - value: 0.011813
+  - value: 0.0069521
+  - value: 0.0040227
+  - value: 0.0023012
+  - value: 0.001307
+  - value: 0.00073922
+  - value: 0.00041704
+  - value: 0.00023495
+  - value: 0.00013226
+- header:
+    name: Trigger efficiency (Run 3 (2022, L3))
+  qualifiers:
+  - name: CHANNEL
+    value: $H \rightarrow Z_DZ_D, Z_D \rightarrow \mu\mu$
+  values:
+  - value: 0.039217
+  - value: 0.051756
+  - value: 0.083179
+  - value: 0.13276
+  - value: 0.18972
+  - value: 0.24285
+  - value: 0.28628
+  - value: 0.31902
+  - value: 0.32807
+  - value: 0.34244
+  - value: 0.35844
+  - value: 0.3688
+  - value: 0.37221
+  - value: 0.374
+  - value: 0.37312
+  - value: 0.36132
+  - value: 0.33043
+  - value: 0.27856
+  - value: 0.25724
+  - value: 0.21498
+  - value: 0.1527
+  - value: 0.1011
+  - value: 0.063518
+  - value: 0.038622
+  - value: 0.023913
+  - value: 0.023158
+  - value: 0.013884
+  - value: 0.0083432
+  - value: 0.0049811
+  - value: 0.002932
+  - value: 0.0017004
+  - value: 0.00097474
+  - value: 0.00055447
+  - value: 0.00031389
+  - value: 0.00017719
+  - value: 9.9856e-05
+  - value: 5.6222e-05
+  - value: 3.1638e-05
+- header:
+    name: Trigger efficiency (Run 3 (2022, L2))
+  qualifiers:
+  - name: CHANNEL
+    value: $H \rightarrow Z_DZ_D, Z_D \rightarrow \mu\mu$
+  values:
+  - value: 0.00048836
+  - value: 0.00042757
+  - value: 0.00042111
+  - value: 0.00048237
+  - value: 0.0006239
+  - value: 0.00082261
+  - value: 0.0010443
+  - value: 0.0013859
+  - value: 0.0016854
+  - value: 0.0033536
+  - value: 0.014106
+  - value: 0.044408
+  - value: 0.069393
+  - value: 0.095616
+  - value: 0.15734
+  - value: 0.2168
+  - value: 0.26441
+  - value: 0.2937
+  - value: 0.2985
+  - value: 0.29865
+  - value: 0.27395
+  - value: 0.22365
+  - value: 0.16372
+  - value: 0.11026
+  - value: 0.072578
+  - value: 0.070515
+  - value: 0.044095
+  - value: 0.027415
+  - value: 0.016873
+  - value: 0.010176
+  - value: 0.0060026
+  - value: 0.0034784
+  - value: 0.0019916
+  - value: 0.0011318
+  - value: 0.00064028
+  - value: 0.00036129
+  - value: 0.00020356
+  - value: 0.0001146
+independent_variables:
+- header:
+    name: $c\tau$
+    units: cm
+  values:
+  - value: 0.00316
+  - value: 0.00562
+  - value: 0.01
+  - value: 0.01778
+  - value: 0.03162
+  - value: 0.05623
+  - value: 0.1
+  - value: 0.17783
+  - value: 0.21699
+  - value: 0.31623
+  - value: 0.56234
+  - value: 1.0
+  - value: 1.3562
+  - value: 1.7783
+  - value: 3.1623
+  - value: 5.6234
+  - value: 10.0
+  - value: 17.783
+  - value: 21.699
+  - value: 31.623
+  - value: 56.234
+  - value: 100.0
+  - value: 177.83
+  - value: 316.23
+  - value: 542.47
+  - value: 562.34
+  - value: 1000.0
+  - value: 1778.3
+  - value: 3162.3
+  - value: 5623.4
+  - value: 10000.0
+  - value: 17783.0
+  - value: 31623.0
+  - value: 56234.0
+  - value: 100000.0
+  - value: 177830.0
+  - value: 316230.0
+  - value: 562340.0
