@@ -56,6 +56,90 @@ def check_imagemagick_available():
     except (subprocess.TimeoutExpired, FileNotFoundError, subprocess.SubprocessError):
         return False
 
+def makeDelayedDiPhotonHistTable(xvar):
+    table_title = 'barrel' if xvar=='eb' else 'endcap'
+    table = Table("ECAL crystal seed time delay for LLP signature in"+table_title)
+
+    if xvar=="eb":
+        location = "left"
+    elif xvar=="ee":
+        location = "right"
+    else:
+        raise ValueError("Unexpected input to function makeDelayedDiPhotonHistTable()")
+    
+    table.location = "Data from Fig. 31 "+location
+    table.add_image(f"./data_DelayedDiPhoton_SahasransuAR/delayed_dieg10_tdelay_ecal_w_d0_{xvar}.pdf")
+
+    reader = RootFileReader(f"./data_DelayedDiPhoton_SahasransuAR/delayed_dieg10_tdelay_ecal_w_d0_{xvar}.root")
+    dymc = reader.read_hist_1d(f"genmatched_ph_seedtime_{xvar}_rebinned;1")
+    llp3cm = reader.read_hist_1d(f"genmatched_ph_seedtime_{xvar}_rebinned;2")
+    llp30cm = reader.read_hist_1d(f"genmatched_ph_seedtime_{xvar}_rebinned;3")
+    llp3m = reader.read_hist_1d(f"genmatched_ph_seedtime_{xvar}_rebinned;4")
+
+    xAxisVar = Variable("seed time", is_independent=True, is_binned=True, units="ns")
+    xAxisVar.values = dymc["x_edges"]
+    table.add_variable(xAxisVar)
+
+    table.add_variable(makeVariable(plot=dymc, label="Z $\rightarrow$ ee", is_independent=False, is_binned=False, is_symmetric=True, units=""))
+    table.add_variable(makeVariable(plot=llp3cm, label="3 cm", is_independent=False, is_binned=False, is_symmetric=True, units=""))
+    table.add_variable(makeVariable(plot=llp30cm, label="30 cm", is_independent=False, is_binned=False, is_symmetric=True, units=""))
+    table.add_variable(makeVariable(plot=llp3m, label="3 m", is_independent=False, is_binned=False, is_symmetric=True, units=""))
+
+    return table
+
+def makeDelayedDiPhotonDataEffTable(xvar):
+    table = Table("Delayed Di-Photon L1+HLT Eff. vs "+xvar)
+
+    if xvar=="seed time ($\mathrm{e_{2}}$)":
+        units = "ns"
+        location = "Data from Fig. 33"
+        data = "tid_elprobe_inZwindow_seedtime_rebinned_clone;1"
+        image = "data_DelayedDiPhoton_SahasransuAR/hltdipho10t1ns_eff_seedtime.pdf"
+        reader = RootFileReader("data_DelayedDiPhoton_SahasransuAR/hltdipho10t1ns_eff_seedtime.root")
+        table.description = "The L1T+HLT efficiency of the delayed-diphoton trigger as a function of the subleading probe "\
+            "electron ($e_2$) supercluster seed time, measured with data collected in 2023. At the HLT, the subleading $e/\\gamma$ "\
+            "supercluster ($e/\\gamma_2$) is required to have $E_T>12\ GeV$, $|\\eta|<2.1$, and a seed time ${>}1\ ns$. "\
+            "The trigger is fully efficient above 1\ ns."
+
+    elif xvar=="p_{T} ($\mathrm{e_{2}}$)":
+        units = "GeV"
+        location = "Data from Fig. 34 left"
+        data = "tid1ns_elprobe_inZwindow_pt_rebinned_clone;1"
+        image = "data_DelayedDiPhoton_SahasransuAR/hltdipho10t1ns_eff_pt.pdf"
+        reader = RootFileReader("data_DelayedDiPhoton_SahasransuAR/hltdipho10t1ns_eff_pt.root")
+        table.description = "The L1T+HLT efficiency of the delayed-diphoton trigger as a function of subleading "\
+            "probe electron ($\Pe_2$) \pt, measured with data collected in 2023. "\
+            "At the HLT, the subleading $\Pe/\PGg$ supercluster ($\Pe/\PGg_2$) is required to have $\ET>12\GeV$, "\
+            "$|\\eta|<2.1$, and a seed time ${>}1\ ns$. The efficiency rises sharply for $\pt > 12\GeV$ and "\
+            "plateaus for $\pt > 35\GeV$. The slow rise in between is from additional L1 \HT requirements."
+
+    elif xvar=="\eta ($\mathrm{e_{2}}$)":
+        units = ""
+        location = "Data from Fig. 34 right"
+        data = "tid1ns_elprobe_inZwindow_eta_rebinned_clone;1"
+        image = "data_DelayedDiPhoton_SahasransuAR/hltdipho10t1ns_eff_eta.pdf"
+        reader = RootFileReader("data_DelayedDiPhoton_SahasransuAR/hltdipho10t1ns_eff_eta.root")
+        table.description = "The L1T+HLT efficiency of the delayed-diphoton trigger as a function of subleading "\
+            "probe electron ($\Pe_2$) $\eta$, measured with data collected in 2023. "\
+            "At the HLT, the subleading $\Pe/\PGg$ supercluster ($\Pe/\PGg_2$) is required to have $\ET>12\GeV$, "\
+            "$|\\eta|<2.1$, and a seed time ${>}1\ ns$. The trigger is efficient in the region $|\\eta| < 2.1$."
+        
+    else:
+        raise ValueError("Unexpected input to function makeDelayedDiPhotonDataEffTable()")
+
+    table.location = location
+    table.add_image(image)
+
+    data = reader.read_teff(data)
+
+    xAxisVar = Variable(xvar, is_independent=True, is_binned=False, units=units)
+    xAxisVar.values = data["x"]
+
+    table.add_variable(xAxisVar)
+    table.add_variable(makeVariable(plot = data, label = "Data (2023)", is_independent=False, is_binned=False, is_symmetric=False, units=""))
+
+    return table
+
 def extract_histogram_data(hist):
     """
     Extract data from a ROOT histogram including bin centers, values, and uncertainties
@@ -570,6 +654,17 @@ def main():
         os.makedirs(output_dir)
     
     successful_figures = 0
+
+    #Figure 31
+    # submission.add_table(makeDelayedDiPhotonHistTable("eb"))
+    # submission.add_table(makeDelayedDiPhotonHistTable("ee"))
+
+    # #Figure 33
+    # submission.add_table(makeDelayedDiPhotonDataEffTable("seed time ($\mathrm{e_{2}}$)"))
+    
+    # #Figure 34
+    # submission.add_table(makeDelayedDiPhotonDataEffTable("p_{T} ($\mathrm{e_{2}}$)"))
+    # submission.add_table(makeDelayedDiPhotonDataEffTable("\eta ($\mathrm{e_{2}}$)"))
     
     # Process existing YAML files from fromDisplacedDimuons directory FIRST (for Figure 40)
     yaml_dir = "data_Alejandro/fromDisplacedDimuons"
