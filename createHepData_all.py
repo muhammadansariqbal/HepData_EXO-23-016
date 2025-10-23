@@ -56,6 +56,88 @@ def check_imagemagick_available():
     except (subprocess.TimeoutExpired, FileNotFoundError, subprocess.SubprocessError):
         return False
 
+def makeDisplacedMuonL1EffTable(xvar):
+    table_title = xvar
+    table = Table("L1T efficiency vs displaced muon $\mathrm{d_{0}}$ in "+table_title)
+
+    if xvar=="BMTF":
+        location = "upper left"
+        table.description = "The BMTF L1T efficiencies for beamspot-constrained and beamspot-unconstrained $\mathrm{p_{T}}$ assignment " \
+            "algorithms for L1T $\mathrm{p_{T}} > 10\mathrm{GeV}$ with respect to generator-level muon track $\mathrm{d_{0}}$, obtained " \
+            "using a sample which produces LLPs that decay to dimuons. The L1T algorithms and data-taking conditions correspond to 2024. A selection " \
+            "on the generator-level muon track $\mathrm{p_{T}} > 15\mathrm{GeV}$ is applied to show the performance at the efficiency plateau. The " \
+            "generator-level muon tracks are extrapolated to the second muon station to determine the $\eta^{\mathrm{gen}}_{\mathrm{st2}}$ values that " \
+            "are used in the plot. The solid markers show the new vertex-unconstrained algorithm performance, while the hollow markers show the default " \
+            "beamspot-constrained algorithm performance."
+        image = "data_Efe/Figure39_upper_left.pdf"
+        reader = RootFileReader("data_Efe/Figure39_upper_left.root")
+        prompt = "eff_dxy_BMTF;1"
+        disp = "eff_dxy_NN_BMTF;1"
+        label_prompt = "BMTF beamspot-constrained efficiency"
+        label_disp = "BMTF beamspot-unconstrained efficiency"
+    elif xvar=="OMTF":
+        location = "upper right"
+        table.description = "The OMTF L1T efficiencies for beamspot-constrained and beamspot-unconstrained $\mathrm{p_{T}}$ assignment " \
+            "algorithms for L1T $\mathrm{p_{T}} > 10\mathrm{GeV}$ with respect to generator-level muon track $\mathrm{d_{0}}$, obtained " \
+            "using a sample which produces LLPs that decay to dimuons. The L1T algorithms and data-taking conditions correspond to 2024. A selection " \
+            "on the generator-level muon track $\mathrm{p_{T}} > 15\mathrm{GeV}$ is applied to show the performance at the efficiency plateau. The " \
+            "generator-level muon tracks are extrapolated to the second muon station to determine the $\eta^{\mathrm{gen}}_{\mathrm{st2}}$ values that " \
+            "are used in the plot. The solid markers show the new vertex-unconstrained algorithm performance, while the hollow markers show the default " \
+            "beamspot-constrained algorithm performance."
+        image = "data_Efe/Figure39_upper_right.pdf"
+        reader = RootFileReader("data_Efe/Figure39_upper_right.root")
+        prompt = "eff_dxy_OMTF;1"
+        disp = "eff_dxy_NN_OMTF;1"
+        label_prompt = "OMTF beamspot-constrained efficiency"
+        label_disp = "OMTF beamspot-unconstrained efficiency"
+    elif xvar=="EMTF":
+        location = "lower"
+        table.description = "The EMTF L1T efficiencies for beamspot-constrained and beamspot-unconstrained $\mathrm{p_{T}}$ assignment " \
+            "algorithms for L1T $\mathrm{p_{T}} > 10\mathrm{GeV}$ with respect to generator-level muon track $\mathrm{d_{0}}$, obtained " \
+            "using a sample which produces LLPs that decay to dimuons. The L1T algorithms and data-taking conditions correspond to 2024. A selection " \
+            "on the generator-level muon track $\mathrm{p_{T}} > 15\mathrm{GeV}$ is applied to show the performance at the efficiency plateau. The " \
+            "generator-level muon tracks are extrapolated to the second muon station to determine the $\eta^{\mathrm{gen}}_{\mathrm{st2}}$ values that " \
+            "are used in the plot. The solid markers show the new vertex-unconstrained algorithm performance, while the hollow markers show the default " \
+            "beamspot-constrained algorithm performance. In the EMTF plot, the different colors show different $|\eta|$ " \
+            "regions: $1.24 < \eta^{\mathrm{gen}}_{\mathrm{st2}} < 1.6$ (blue), $1.6 < \eta^{\mathrm{gen}}_{\mathrm{st2}} < 2.0$ (red)."
+        image = "data_Efe/Figure39_lower.pdf"
+        reader = RootFileReader("data_Efe/Figure39_lower.root")
+        prompt = "eff_dxy_EMTF1;1"
+        disp = "eff_dxy_NN_EMTF1;1"
+        prompt2 = "eff_dxy_EMTF2;1"
+        disp2 = "eff_dxy_NN_EMTF2;1"
+        label_prompt = "EMTF ($1.24 < \eta^{\mathrm{gen}}_{\mathrm{st2}} < 1.6$) beamspot-constrained efficiency"
+        label_disp = "EMTF ($1.24 < \eta^{\mathrm{gen}}_{\mathrm{st2}} < 1.6$) beamspot-unconstrained efficiency"
+        label_prompt2 = "EMTF ($1.6 < \eta^{\mathrm{gen}}_{\mathrm{st2}} < 2.0$) beamspot-constrained efficiency"
+        label_disp2 = "EMTF ($1.6 < \eta^{\mathrm{gen}}_{\mathrm{st2}} < 2.0$) beamspot-unconstrained efficiency"
+    else:
+        raise ValueError("Unexpected input to function makeDelayedDiPhotonHistTable()")
+
+    table.location = "Data from Fig. 39 "+location
+    table.add_image(image)
+
+    if xvar=="EMTF":
+        plot_prompt = reader.read_graph(prompt)
+        plot_disp = reader.read_graph(disp)
+        plot_prompt2 = reader.read_graph(prompt2)
+        plot_disp2 = reader.read_graph(disp2)
+    else:
+        plot_prompt = reader.read_graph(prompt)
+        plot_disp = reader.read_graph(disp)
+
+    xAxisVar = Variable("Gen.-level muon track d_{0}", is_independent=True, is_binned=False, units="cm")
+    xAxisVar.values = plot_prompt["x"]
+    table.add_variable(xAxisVar)
+
+    table.add_variable(makeVariable(plot=plot_prompt, label=label_prompt, is_independent=False, is_binned=False, is_symmetric=False, units=""))
+    table.add_variable(makeVariable(plot=plot_disp, label=label_disp, is_independent=False, is_binned=False, is_symmetric=False, units=""))
+    if xvar=="EMTF":
+        table.add_variable(makeVariable(plot=plot_prompt2, label=label_prompt2, is_independent=False, is_binned=False, is_symmetric=False, units=""))
+        table.add_variable(makeVariable(plot=plot_disp2, label=label_disp2, is_independent=False, is_binned=False, is_symmetric=False, units=""))
+
+    return table
+
+
 def makeDelayedDiPhotonHistTable(xvar):
     table_title = 'barrel' if xvar=='eb' else 'endcap'
     table = Table("ECAL crystal seed time delay for LLP signature in "+table_title)
@@ -708,6 +790,11 @@ def main():
     # Figure 34
     submission.add_table(makeDelayedDiPhotonDataEffTable("$p_{T}$ ($\mathrm{e_{2}}$)"))
     submission.add_table(makeDelayedDiPhotonDataEffTable("$\eta$ ($\mathrm{e_{2}}$)"))
+
+    #Figure 39
+    submission.add_table(makeDisplacedMuonL1EffTable("BMTF"))
+    submission.add_table(makeDisplacedMuonL1EffTable("OMTF"))
+    submission.add_table(makeDisplacedMuonL1EffTable("EMTF"))
     
     # Process existing YAML files from fromDisplacedDimuons directory FIRST (for Figure 40)
     yaml_dir = "data_Alejandro/fromDisplacedDimuons"
