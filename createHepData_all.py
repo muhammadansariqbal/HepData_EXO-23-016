@@ -751,6 +751,77 @@ def makeMuonNoBPTXRateVsNBunchesTable(year):
 
     return table
 
+def convertHLTMuResoToYaml(rootfile, label, xtitle, ytitle, units):
+    # Table to store and output all data
+    table = Table(label)
+
+    # Read in graphs from the root file
+    reader = RootFileReader(rootfile)
+
+    graph_L2 = reader.read_graph("c/main/L2ptres")
+    graph_L3 = reader.read_graph("c/main/L3ptres")
+
+    # Form and fill the x-variable using one of the graphs
+    x = Variable(xtitle, is_independent=True, is_binned=True, units=units)
+    x.values = [
+        (
+            # Lower
+            graph_L2["x"][i] - graph_L2["dx"][i],
+            # Upper
+            graph_L2["x"][i] + graph_L2["dx"][i],
+        ) for i,_ in enumerate(graph_L2["x"])
+    ]
+
+    # Form and fill the y-variables from the graphs
+    # L2
+    y_L2 = Variable(ytitle + "  (L2 muons)", is_independent=False, is_binned=False)
+    y_L2.values = graph_L2["y"]
+    y_L2.values = [val if val != 0 else "-" for val in y_L2.values]
+    yunc_L2 = Uncertainty("", is_symmetric=True)
+    yunc_L2.values = graph_L2["dy"]
+    y_L2.uncertainties.append(yunc_L2)
+    y_L2.add_qualifier("CHANNEL", "$\\text{H} \\rightarrow \\text{Z}_\\text{D}\\text{Z}_\\text{D}, \\text{Z}_\\text{D} \\rightarrow \\text{μ}\\text{μ}$")
+    y_L2.add_qualifier("SQRT(S)", "13.6", "TeV")
+
+    # L3
+    y_L3 = Variable(ytitle + "  (L3 muons)", is_independent=False, is_binned=False)
+    y_L3.values = graph_L3["y"]
+    y_L3.values = [val if val != 0 else "-" for val in y_L3.values]
+    yunc_L3 = Uncertainty("", is_symmetric=True)
+    yunc_L3.values = graph_L3["dy"]
+    y_L3.uncertainties.append(yunc_L3)
+    y_L3.add_qualifier("CHANNEL", "$\\text{H} \\rightarrow \\text{Z}_\\text{D}\\text{Z}_\\text{D}, \\text{Z}_\\text{D} \\rightarrow \\text{μ}\\text{μ}$")
+    y_L3.add_qualifier("SQRT(S)", "13.6", "TeV")
+
+    # Add variables to the table
+    table.add_variable(x)
+    table.add_variable(y_L2)
+    table.add_variable(y_L3)
+
+    return table
+
+def makeHLTMuResoTable(xvar):
+    if xvar == "genpt":
+        table = convertHLTMuResoToYaml("data_Ansar/HLTMuonsRes_vs_genpt.root", "Figure 69 left", "$p_\\text{T}^\\text{gen}$", "$\\text{Fitted }\\sigma : (1/p_\\text{T}^\\text{HLT} - 1/p_\\text{T}^\\text{gen}) / 1/p_\\text{T}^\\text{gen}$", "GeV")
+        table.description = "Inverse HLT muon $p_\\text{T}$ resolution ($(1/p_\\text{T}^\\text{HLT}-1/p_\\text{T}^\\text{gen})/(1/p_\\text{T}^\\text{gen})$) as a function of the generator-level muon $p_\\text{T}$, for simulated HAHM signal events, where the dark Higgs boson ($\\text{H}_\\text{D}$) mixes with the SM Higgs boson ($\\text{H}$) and decays to a pair of long-lived dark photons ($\\text{Z}_\\text{D}$), for various values of $m_{\\text{Z}_\\text{D}}$ and $\\epsilon$. Conditions for 2022 data-taking are shown. The muons must have $p_\\text{T}>10\\text{ GeV}$, and the L2 and L3 muons are geometrically matched to the generator-level muons."
+        table.location = "Data from Figure 69 left"
+        table.add_image("data_Ansar/HLTMuonsRes_vs_genpt.png")
+        table.keywords["cmenergies"] = [13600.0]
+        table.keywords["reactions"] = ["P P --> H --> ZD ZD --> MU MU + ANYTHING"]
+        table.keywords["phrases"] = ["pT resolution", "L2 muons", "L3 muons", "Tracker muon", "Displaced standalone muon", "pT"]
+
+    elif xvar == "genlxy":
+        table = convertHLTMuResoToYaml("data_Ansar/HLTMuonsRes_vs_genlxy.root", "Figure 69 right", "$L_{xy}^\\text{gen}$", "$\\text{Fitted }\\sigma : (1/p_\\text{T}^\\text{HLT} - 1/p_\\text{T}^\\text{gen}) / 1/p_\\text{T}^\\text{gen}$", "cm")
+        table.description = "Inverse HLT muon $p_\\text{T}$ resolution ($(1/p_\\text{T}^\\text{HLT}-1/p_\\text{T}^\\text{gen})/(1/p_\\text{T}^\\text{gen})$) as a function of the generator-level $L_{xy}$, for simulated HAHM signal events, where the dark Higgs boson ($\\text{H}_\\text{D}$) mixes with the SM Higgs boson ($\\text{H}$) and decays to a pair of long-lived dark photons ($\\text{Z}_\\text{D}$), for various values of $m_{\\text{Z}_\\text{D}}$ and $\\epsilon$. Conditions for 2022 data-taking are shown. The muons must have $p_\\text{T}>10\\text{ GeV}$, and the L2 and L3 muons are geometrically matched to the generator-level muons. The dashed vertical lines indicate the radial positions of the layers of the tracking detectors, with BPX, TIB, and TOB denoting the barrel pixel, tracker inner barrel, and tracker outer barrel, respectively."
+        table.location = "Data from Figure 69 right"
+        table.add_image("data_Ansar/HLTMuonsRes_vs_genlxy.png")
+        table.keywords["cmenergies"] = [13600.0]
+        table.keywords["reactions"] = ["P P --> H --> ZD ZD --> MU MU + ANYTHING"]
+        table.keywords["phrases"] = ["pT resolution", "L2 muons", "L3 muons", "Tracker muon", "Displaced standalone muon", "Transverse decay length"]
+
+    return table
+
+
 def main():
     # Check if ImageMagick is available for image processing
     has_imagemagick = check_imagemagick_available()
@@ -840,6 +911,10 @@ def main():
     submission.add_table(makeMuonNoBPTXRateVsNBunchesTable("2022"))
     submission.add_table(makeMuonNoBPTXRateVsNBunchesTable("2023"))
     submission.add_table(makeMuonNoBPTXRateVsNBunchesTable("2024"))
+
+    # Figure 69
+    submission.add_table(makeHLTMuResoTable("genpt"))
+    submission.add_table(makeHLTMuResoTable("genlxy"))
 
     for table in submission.tables:
         table.keywords["cmenergies"] = [13000,13600]
